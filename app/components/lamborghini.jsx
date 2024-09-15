@@ -7,7 +7,7 @@ Title: Lamborghini Centenario LP-770 Interior SDC
 */
 
 import React, { useRef, useEffect } from "react";
-import { useGLTF, useAnimations, useAnimation } from "@react-three/drei";
+import { useGLTF, useAnimations } from "@react-three/drei";
 
 const Lamborghini = (props) => {
   const group = useRef();

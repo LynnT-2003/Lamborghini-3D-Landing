@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import LamboRoadster from "../components/lamboRoadster";
 import { Leva } from "leva";
 import { Suspense } from "react";
