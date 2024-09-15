@@ -1,48 +1,66 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Lamborghini from "../components/lamborghini";
 import { Leva } from "leva";
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { PerspectiveCamera } from "@react-three/drei";
-import HeroCamera from "../components/HeroCamera";
-import { OrbitControls } from "@react-three/drei";
+import { PerspectiveCamera, OrbitControls } from "@react-three/drei";
+// import HeroCamera from "../components/HeroCamera";
 
 const LamborghiniSection = () => {
-  return (
-    <div className="w-full h-screen pb-0 px-10 flex flex-col lg:flex-row">
-      <div className="w-full lg:w-2/3 h-1/2 lg:h-full">
-        <Canvas className="w-full h-full">
-          <Suspense>
-            <Leva hidden />
-            <PerspectiveCamera makeDefault position={[0, 0, 10]} />
-            <HeroCamera>
-              <Lamborghini
-                scale={4}
-                position={[1, -3, 0]}
-                rotation={[0, -1, 0]}
-              />
-            </HeroCamera>
-            <ambientLight intensity={2} />
-            <directionalLight position={[10, 10, 10]} intensity={2} />
-            <directionalLight position={[-10, 10, 10]} intensity={2} />
-            <directionalLight position={[10, 10, -10]} intensity={2} />
-            <directionalLight position={[-10, 10, -10]} intensity={2} />
-          </Suspense>
-        </Canvas>
-      </div>
+  const [scrollY, setScrollY] = useState(0);
+  const [rotationY, setRotationY] = useState(0);
 
-      <div className="mt-16 md:mt-0 w-full lg:w-1/3 h-1/2 lg:h-full p-6 flex justify-center items-center">
-        <div className="ml-3">
-          <h2 className="text-7xl text-white font-thin mb-12">CENTARIO</h2>
-          <p className="ml-1 text-lg font-sans font-extralight leading-loose text-gray-300">
-            The Lamborghini Centenario exemplifies the innovative design and
-            engineering skills of the House of the Raging Bull. The finest
-            possible tribute to our founder Ferruccio Lamborghini on the
-            centenary of his birth, it is an homage to his vision and the future
-            he believed in—a vision that we at Lamborghini still embrace.
-          </p>
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+      setRotationY(window.scrollY * 0.005); // Adjust rotation speed as needed
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  return (
+    <div className="relative w-full h-[100vh]">
+      {/* 3D Model Canvas */}
+      <div
+        className="absolute left-0 w-full h-full flex justify-center pointer-events-none"
+        style={{ transform: `translateY(${scrollY * 0.1}px)` }} // Parallax effect
+      >
+        <div className="ml-3 text-center text-white">
+          <h2
+            className="text-[15vw] mt-4 font-sans font-extralight mb-12"
+            style={{ transform: `translateY(${scrollY * 0.2}px)` }} // Slightly different parallax speed for more depth
+          >
+            CENTENARIO
+          </h2>
         </div>
       </div>
+
+      <Canvas className="flex w-full h-full items-center justify-center">
+        <Suspense>
+          <Leva hidden />
+          <PerspectiveCamera makeDefault position={[0, 0, 10]} />
+          {/* <HeroCamera> */}
+          <Lamborghini
+            scale={rotationY * 0.45}
+            position={[0, -1.5, 0]}
+            // rotation={[0, rotationY, rotationY * 1.3]} // Rotation changes based on scroll
+            rotation={[0, rotationY * -0.8, 0]} // Rotation changes based on scroll
+          />
+          {/* </HeroCamera> */}
+
+          <ambientLight intensity={2} />
+          <OrbitControls enableZoom={false} maxPolarAngle={Math.PI / 2} />
+          <directionalLight position={[10, 10, 10]} intensity={2} />
+          <directionalLight position={[-10, 10, 10]} intensity={2} />
+          <directionalLight position={[10, 10, -10]} intensity={2} />
+          <directionalLight position={[-10, 10, -10]} intensity={2} />
+        </Suspense>
+      </Canvas>
     </div>
   );
 };
